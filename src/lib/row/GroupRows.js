@@ -8,6 +8,9 @@ export default class GroupRows extends Component {
     lineCount: PropTypes.number.isRequired,
     groupHeights: PropTypes.array.isRequired,
     onRowClick: PropTypes.func.isRequired,
+    onRowClickStart: PropTypes.func.isRequired,
+    onRowClickEnd: PropTypes.func.isRequired,
+    onMouseMove: PropTypes.func.isRequired,
     onRowDoubleClick: PropTypes.func.isRequired,
     clickTolerance: PropTypes.number.isRequired,
     groups: PropTypes.array.isRequired,
@@ -30,6 +33,9 @@ export default class GroupRows extends Component {
       lineCount,
       groupHeights,
       onRowClick,
+      onRowClickStart,
+      onRowClickEnd,
+      onMouseMove,
       onRowDoubleClick,
       clickTolerance,
       groups,
@@ -44,6 +50,9 @@ export default class GroupRows extends Component {
           clickTolerance={clickTolerance}
           onContextMenu={evt => onRowContextClick(evt, i)}
           onClick={evt => onRowClick(evt, i)}
+          onClickStart={evt => onRowClickStart(evt, i)}
+          onClickEnd={evt => onRowClickEnd(evt, i)}
+          onMouseMove={evt => {onMouseMove(evt, i)}}
           onDoubleClick={evt => onRowDoubleClick(evt, i)}
           key={`horizontal-line-${i}`}
           isEvenRow={i % 2 === 0}

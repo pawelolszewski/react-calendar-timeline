@@ -264,10 +264,12 @@ export function getGroupedItems(items, groupOrders) {
   // Populate groups
   for (let i = 0; i < items.length; i++) {
     if (items[i].dimensions.order !== undefined) {
-      const groupItem = groupedItems[items[i].dimensions.order.index]
-      if (groupItem) {
-        groupItem.items.push(items[i])
-      }
+      items[i].dimensions.order.forEach((el) => {
+        const groupItem = groupedItems[el.index]
+        if (groupItem) {
+          groupItem.items.push(items[i])
+        }
+      })
     }
   }
 
@@ -355,10 +357,11 @@ export function groupStack(
 // Calculate the position of this item for a group that is not being stacked
 export function groupNoStack(lineHeight, item, groupHeight, groupTop) {
   let verticalMargin = (lineHeight - item.dimensions.height) / 2
-  if (item.dimensions.top === null) {
-    item.dimensions.top = groupTop + verticalMargin
-    groupHeight = Math.max(groupHeight, lineHeight)
+  if (!Array.isArray(item.dimensions.top)) {
+    item.dimensions.top = []
   }
+  item.dimensions.top.push(groupTop + verticalMargin)
+  groupHeight = Math.max(groupHeight, lineHeight)
   return { groupHeight, verticalMargin: 0, itemTop: item.dimensions.top }
 }
 
@@ -572,8 +575,22 @@ export function getItemDimensions({
     canvasWidth
   })
   if (dimension) {
+    const group = _get(item, keys.itemGroupKey);
+    const order = []
+    if (Array.isArray(group)) {
+      group.forEach((el) => {
+        if (groupOrders[el] !== undefined) {
+          order.push(groupOrders[el])
+        }
+      })
+    }
+    else {
+      if (groupOrders[group] !== undefined) {
+        order.push(groupOrders[group])
+      }
+    }
     dimension.top = null
-    dimension.order = groupOrders[_get(item, keys.itemGroupKey)]
+    dimension.order = order
     dimension.stack = !item.isOverlay
     dimension.height = lineHeight * itemHeightRatio
     return {

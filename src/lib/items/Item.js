@@ -167,7 +167,7 @@ export default class Item extends Component {
 
     const offset = getSumOffset(this.props.scrollRef).offsetLeft
     const scrolls = getSumScroll(this.props.scrollRef)
-      
+
     return (e.pageX - offset + scrolls.scrollLeft) * ratio + this.props.canvasTimeStart;
   }
 
@@ -221,11 +221,11 @@ export default class Item extends Component {
     }
   }
 
-  mountInteract() {
+  mountInteract(item) {
     const leftResize = this.props.useResizeHandle ? ".rct-item-handler-resize-left" : true
     const rightResize = this.props.useResizeHandle ? ".rct-item-handler-resize-right" : true
 
-    interact(this.item)
+    interact(item)
       .resizable({
         edges: {
           left: this.canResizeLeft() && leftResize,
@@ -427,7 +427,9 @@ export default class Item extends Component {
       this.props.selected && this.canResizeRight(this.props)
 
     if (this.props.selected && !interactMounted) {
-      this.mountInteract()
+      this.item.forEach((el) => {
+        this.mountInteract(el)
+      })
       interactMounted = true
     }
 
@@ -439,19 +441,26 @@ export default class Item extends Component {
       const leftResize = this.props.useResizeHandle ? this.dragLeft : true
       const rightResize = this.props.useResizeHandle ? this.dragRight : true
 
-      interact(this.item).resizable({
-        enabled: willBeAbleToResizeLeft || willBeAbleToResizeRight,
-        edges: {
-          top: false,
-          bottom: false,
-          left: willBeAbleToResizeLeft && leftResize,
-          right: willBeAbleToResizeRight && rightResize
-        }
+      this.item.forEach((el) => {
+        interact(el).resizable({
+          enabled: willBeAbleToResizeLeft || willBeAbleToResizeRight,
+          edges: {
+            top: false,
+            bottom: false,
+            left: willBeAbleToResizeLeft && leftResize,
+            right: willBeAbleToResizeRight && rightResize
+          }
+        })
       })
     }
     if (interactMounted && couldDrag !== willBeAbleToDrag) {
-      interact(this.item).draggable({ enabled: willBeAbleToDrag })
+      this.item.forEach((el) => {
+        interact(el).draggable({ enabled: willBeAbleToDrag })
+      })
     }
+    // if (this.state.interactMounted && prevProps.selected && !this.props.selected) {
+    //   this.setState({interactMounted: false})
+    // }
   }
 
   onMouseDown = e => {
@@ -503,7 +512,14 @@ export default class Item extends Component {
     }
   }
 
-  getItemRef = el => (this.item = el)
+  getItemRef = el => {
+    if (!el) { return }
+    if (!Array.isArray(this.item)) {
+      this.item = []
+    }
+    this.item.push(el)
+    return(el)
+  }
   getDragLeftRef = el => (this.dragLeft = el)
   getDragRightRef = el => (this.dragRight = el)
 
@@ -559,7 +575,7 @@ export default class Item extends Component {
       position: 'absolute',
       boxSizing: 'border-box',
       left: `${dimensions.left}px`,
-      top: `${dimensions.top}px`,
+      top: dimensions.top,
       width: `${dimensions.width}px`,
       height: `${dimensions.height}px`,
       lineHeight: `${dimensions.height}px`

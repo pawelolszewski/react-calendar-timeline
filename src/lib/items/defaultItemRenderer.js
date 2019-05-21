@@ -8,18 +8,26 @@ export const defaultItemRenderer = ({
   getResizeProps
 }) => {
   const { left: leftResizeProps, right: rightResizeProps } = getResizeProps()
-  return (
-    <div {...getItemProps(item.itemProps)}>
-      {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : ''}
+  const itemProps = {...getItemProps(item.itemProps)}
+  const child = itemProps.style.top && itemProps.style.top.map((top, index) => {
+    const divProps = {...itemProps, key: itemProps.key + '-' + index ,style: {...itemProps.style, top: top + 'px' }}
+    return(
+      <div {...divProps}>
+        {itemContext.useResizeHandle ? <div {...leftResizeProps} /> : ''}
 
-      <div
-        className="rct-item-content"
-        style={{ maxHeight: `${itemContext.dimensions.height}` }}
-      >
-        {itemContext.title}
+        <div
+          className="rct-item-content"
+          style={{ maxHeight: `${itemContext.dimensions.height}` }}
+        >
+          {index === 0 ? itemContext.title : ''}
+        </div>
+
+        {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : ''}
       </div>
-
-      {itemContext.useResizeHandle ? <div {...rightResizeProps} /> : ''}
+    )})
+  return (
+    <div key={itemProps.key}>
+      {child}
     </div>
   )
 }

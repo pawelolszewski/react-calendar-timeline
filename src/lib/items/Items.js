@@ -123,10 +123,12 @@ export default class Items extends Component {
               key={_get(item, itemIdKey)}
               item={item}
               keys={this.props.keys}
-              order={groupOrders[_get(item, itemGroupKey)]}
+              order={groupOrders[_get(item, itemGroupKey)[0]] || groupOrders[_get(item, itemGroupKey)]}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }
+              //Automatically select all items.
+              // selected={true}
               selected={this.isSelected(item, itemIdKey)}
               canChangeGroup={
                 _get(item, 'canChangeGroup') !== undefined

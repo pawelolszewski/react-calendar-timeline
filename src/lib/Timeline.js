@@ -19,7 +19,7 @@ import {
   calculateScrollCanvas,
   getCanvasBoundariesFromVisibleTime,
   getCanvasWidth,
-  stackTimelineItems,
+  stackTimelineItems, coordinateToTimeRatio,
 } from './utility/calendar'
 import { _get, _length } from './utility/generic'
 import {
@@ -34,6 +34,10 @@ import { TimelineHeadersProvider } from './headers/HeadersContext'
 import TimelineHeaders from './headers/TimelineHeaders'
 import DateHeader from './headers/DateHeader'
 import SidebarHeader from './headers/SidebarHeader'
+import {
+  getSumOffset,
+  getSumScroll,
+} from 'react-calendar-timeline/lib/utility/dom-helpers'
 
 export default class ReactCalendarTimeline extends Component {
   static propTypes = {
@@ -72,6 +76,9 @@ export default class ReactCalendarTimeline extends Component {
     onItemSelect: PropTypes.func,
     onItemDeselect: PropTypes.func,
     onCanvasClick: PropTypes.func,
+    onCanvasClickStart: PropTypes.func,
+    onCanvasClickEnd: PropTypes.func,
+    onMouseMove: PropTypes.func,
     onItemDoubleClick: PropTypes.func,
     onItemContextMenu: PropTypes.func,
     onCanvasDoubleClick: PropTypes.func,
@@ -296,7 +303,8 @@ export default class ReactCalendarTimeline extends Component {
       dragGroupTitle: null,
       resizeTime: null,
       resizingItem: null,
-      resizingEdge: null
+      resizingEdge: null,
+      isMouseDown: false,
     }
 
     const canvasWidth=  getCanvasWidth(this.state.width)
@@ -337,6 +345,7 @@ export default class ReactCalendarTimeline extends Component {
 
     windowResizeDetector.addListener(this)
 
+    // window.addEventListener('scroll', this.handleMouseMove)
     this.lastTouchDistance = null
   }
 
@@ -615,9 +624,22 @@ export default class ReactCalendarTimeline extends Component {
     // context of the row element, not client or page
     const { offsetX } = e.nativeEvent
 
+    // For touch devices:
+    if (offsetX === undefined) {
+      if (typeof e.nativeEvent.touches !== 'undefined' &&
+        e.nativeEvent.touches.length > 0) {
+        const ratio = coordinateToTimeRatio(this.state.canvasTimeStart,
+          this.state.canvasTimeEnd, getCanvasWidth(this.state.width))
+        const offset = getSumOffset(this.scrollComponent).offsetLeft
+        const scrolls = getSumScroll(this.scrollComponent)
+
+        return (e.nativeEvent.touches[0].pageX - offset +
+          scrolls.scrollLeft) * ratio + this.state.canvasTimeStart
+      }
+    }
     let time = calculateTimeForXPosition(
       canvasTimeStart,
-      
+
       canvasTimeEnd,
       getCanvasWidth(width),
       offsetX
@@ -718,6 +740,63 @@ export default class ReactCalendarTimeline extends Component {
     this.props.onCanvasClick(groupId, time, e)
   }
 
+  handleRowClickStart = (e, rowIndex) => {
+    if (this.state.selectedItem) {
+      this.selectItem(null)
+    }
+    if (this.state.isMouseDown) { return }
+
+
+    this.setState({
+      isMouseDown: true
+    })
+
+    if (this.props.onCanvasClickStart == null) return
+
+    const time = this.getTimeFromRowClickEvent(e)
+    const groupId = _get(
+      this.props.groups[rowIndex],
+      this.props.keys.groupIdKey
+    )
+
+    this.props.onCanvasClickStart(groupId, time, e)
+  }
+
+  handleMouseMove = (e, rowIndex) => {
+    if (this.props.onMouseMove == null) return
+
+
+
+    if (this.state.isMouseDown) {
+      const time = this.getTimeFromRowClickEvent(e)
+      const groupId = _get(
+        this.props.groups[rowIndex],
+        this.props.keys.groupIdKey
+      )
+
+      this.props.onMouseMove(groupId, time, e)
+
+    }
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
+  handleRowClickEnd = (e, rowIndex) => {
+    if (this.props.onCanvasClickEnd == null) return
+
+    this.setState({
+      isMouseDown: false
+    })
+
+    const time = this.getTimeFromRowClickEvent(e)
+    const groupId = _get(
+      this.props.groups[rowIndex],
+      this.props.keys.groupIdKey
+    )
+
+    this.props.onCanvasClickEnd(groupId, time, e)
+  }
+
   handleRowDoubleClick = (e, rowIndex) => {
     if (this.props.onCanvasDoubleClick == null) return
 
@@ -754,6 +833,10 @@ export default class ReactCalendarTimeline extends Component {
         groupHeights={groupHeights}
         clickTolerance={this.props.clickTolerance}
         onRowClick={this.handleRowClick}
+        onRowClickStart={this.handleRowClickStart}
+        onRowClickEnd={this.handleRowClickEnd}
+        onMouseUp={this.handleRowClickEnd}
+        onMouseMove={this.handleMouseMove}
         onRowDoubleClick={this.handleRowDoubleClick}
         horizontalLineClassNamesForGroup={
           this.props.horizontalLineClassNamesForGroup
