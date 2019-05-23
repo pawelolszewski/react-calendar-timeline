@@ -37,7 +37,7 @@ import SidebarHeader from './headers/SidebarHeader'
 import {
   getSumOffset,
   getSumScroll,
-} from 'react-calendar-timeline/lib/utility/dom-helpers'
+} from './utility/dom-helpers'
 
 export default class ReactCalendarTimeline extends Component {
   static propTypes = {
