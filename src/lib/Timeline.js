@@ -885,6 +885,7 @@ export default class ReactCalendarTimeline extends Component {
         itemRenderer={this.props.itemRenderer}
         selected={this.props.selected}
         scrollRef={this.scrollComponent}
+        pointerEventsDisabled={this.state.isMouseDown}
       />
     )
   }

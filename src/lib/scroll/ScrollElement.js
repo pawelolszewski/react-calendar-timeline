@@ -12,7 +12,7 @@ class ScrollElement extends Component {
     // isInteractingWithItem: PropTypes.bool.isRequired,
     // onZoom: PropTypes.func.isRequired,
     // onWheelZoom: PropTypes.func.isRequired,
-    // onScroll: PropTypes.func.isRequired
+    onScroll: PropTypes.func.isRequired
   }
 
   constructor() {
@@ -31,8 +31,8 @@ class ScrollElement extends Component {
   }
 
   handleScroll = () => {
-    // const scrollX = this.scrollComponent.scrollLeft
-    // this.props.onScroll(scrollX)
+    const scrollX = this.scrollComponent.scrollLeft
+    this.props.onScroll(scrollX)
   }
 
   handleWheel = e => {

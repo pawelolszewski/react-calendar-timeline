@@ -32,6 +32,7 @@ export default class Items extends Component {
     selectedItem: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     canChangeGroup: PropTypes.bool.isRequired,
+    pointerEventsDisabled: PropTypes.bool.isRequired,
     canMove: PropTypes.bool.isRequired,
     canResize: PropTypes.oneOf([true, false, 'left', 'right', 'both']),
     canSelect: PropTypes.bool,
@@ -115,7 +116,7 @@ export default class Items extends Component {
     const sortedDimensionItems = keyBy(dimensionItems, 'id')
 
     return (
-      <div className="rct-items">
+      <div className="rct-items" style={{ pointerEvents: this.props.pointerEventsDisabled ? 'none' : 'auto' }}>
         {visibleItems
           .filter(item => sortedDimensionItems[_get(item, itemIdKey)])
           .map(item => (
