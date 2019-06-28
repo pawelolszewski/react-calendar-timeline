@@ -623,27 +623,34 @@ export default class ReactCalendarTimeline extends Component {
     // this gives us distance from left of row element, so event is in
     // context of the row element, not client or page
     const { offsetX } = e.nativeEvent
-
+    let time;
     // For touch devices:
     if (offsetX === undefined) {
+      let touchOffsetX = 0;
       if (typeof e.nativeEvent.touches !== 'undefined' &&
         e.nativeEvent.touches.length > 0) {
-        const ratio = coordinateToTimeRatio(this.state.canvasTimeStart,
-          this.state.canvasTimeEnd, getCanvasWidth(this.state.width))
-        const offset = getSumOffset(this.scrollComponent).offsetLeft
-        const scrolls = getSumScroll(this.scrollComponent)
-
-        return (e.nativeEvent.touches[0].pageX - offset +
-          scrolls.scrollLeft) * ratio + this.state.canvasTimeStart
+        touchOffsetX = e.nativeEvent.touches[0].pageX
       }
+      else if (typeof e.nativeEvent.changedTouches !== 'undefined' &&
+        e.nativeEvent.changedTouches.length > 0) {
+        touchOffsetX = e.nativeEvent.changedTouches[0].pageX
+      }
+      const ratio = coordinateToTimeRatio(this.state.canvasTimeStart,
+        this.state.canvasTimeEnd, getCanvasWidth(this.state.width))
+      const offset = getSumOffset(this.scrollComponent).offsetLeft
+      const scrolls = getSumScroll(this.scrollComponent)
+      time = (touchOffsetX - offset +
+        scrolls.scrollLeft) * ratio + this.state.canvasTimeStart
     }
-    let time = calculateTimeForXPosition(
-      canvasTimeStart,
-
-      canvasTimeEnd,
-      getCanvasWidth(width),
-      offsetX
-    )
+    // For mouse events
+    else {
+      time = calculateTimeForXPosition(
+        canvasTimeStart,
+        canvasTimeEnd,
+        getCanvasWidth(width),
+        offsetX
+      )
+    }
     time = Math.floor(time / dragSnap) * dragSnap
 
     return time
@@ -758,14 +765,12 @@ export default class ReactCalendarTimeline extends Component {
       this.props.groups[rowIndex],
       this.props.keys.groupIdKey
     )
-
+    e.preventDefault()
     this.props.onCanvasClickStart(groupId, time, e)
   }
 
   handleMouseMove = (e, rowIndex) => {
     if (this.props.onMouseMove == null) return
-
-
 
     if (this.state.isMouseDown) {
       const time = this.getTimeFromRowClickEvent(e)
@@ -793,6 +798,7 @@ export default class ReactCalendarTimeline extends Component {
       this.props.groups[rowIndex],
       this.props.keys.groupIdKey
     )
+    e.preventDefault()
 
     this.props.onCanvasClickEnd(groupId, time, e)
   }
