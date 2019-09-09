@@ -78,7 +78,7 @@ export default class Items extends Component {
       nextProps.canChangeGroup === this.props.canChangeGroup &&
       nextProps.canMove === this.props.canMove &&
       nextProps.canResize === this.props.canResize &&
-      nextProps.canSelect === this.props.canSelect
+      nextProps.canSelect === this.props.canSelect     
     )
   }
 
@@ -129,8 +129,8 @@ export default class Items extends Component {
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }
               //Automatically select all items.
-              selected={true}
-              // selected={this.isSelected(item, itemIdKey)}
+              // selected={true}
+              selected={this.isSelected(item, itemIdKey)}
               canChangeGroup={
                 _get(item, 'canChangeGroup') !== undefined
                   ? _get(item, 'canChangeGroup')
