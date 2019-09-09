@@ -153,7 +153,6 @@ An array specifying keys in the `items` and `groups` objects. Defaults to
   groupIdKey: 'id',
   groupTitleKey: 'title',
   groupRightTitleKey: 'rightTitle',
-  groupLabelKey: 'title', // key for what to show in `InfoLabel`
   itemIdKey: 'id',
   itemTitleKey: 'title',    // key for item div content
   itemDivTitleKey: 'title', // key for item div title (<div title="text"/>)
@@ -255,6 +254,19 @@ Default:
 ## scrollRef
 
 Ref callback that gets a DOM reference to the scroll body element. Can be useful to programmatically scroll.
+
+## onItemDrag(itemDragObject)
+
+Called when an item is moving or resizing. Returns an object with the following properties:
+
+| property           | type     | description                                                            |
+| ------------------ | -------- | ---------------------------------------------------------------------- |
+| `eventType`        | `string` | retuns either `move` or `resize`                                       |
+| `itemId`           | `number` | ID of the item being moved or resized                                  |
+| `time`             | `number` | UNIX timestamp in milliseconds                                         |
+| `edge`             | `string` | on `resize`, returns a value of either `left` or `right`               |
+| `newGroupOrder`    | `number` | on `move`, index position of the new group that the item is moving to  |
+
 
 ## onItemMove(itemId, dragTime, newGroupOrder)
 
@@ -367,8 +379,8 @@ Parameters provided to the function has two types: context params which have the
 | property           | type     | description                                          |
 | ------------------ | -------- | ---------------------------------------------------- |
 | `timelineWidth`    | `number` | returns the full width of the timeline.              |
-| `visibleTimeStart` | `number` | returns the exact start of view port of the calender |
-| `visibleTimeEnd`   | `number` | returns the exact end of view port of the calender.  |
+| `visibleTimeStart` | `number` | returns the exact start of view port of the calendar |
+| `visibleTimeEnd`   | `number` | returns the exact end of view port of the calendar.  |
 | `canvasTimeStart`  | `number` | denotes the start time in ms of the canvas timeline  |
 | `canvasTimeEnd`    | `number` | denotes the end time in ms of the canvas timeline    |
 
@@ -419,7 +431,7 @@ Rather than applying props on the element yourself and to avoid your props being
 
   \*\* _the given styles will only override the styles that are not a requirement for positioning the item. Other styles like `color`, `radius` and others_
 
-  These properties can be override using the prop argument with properties:
+  These properties can be overriden using the prop argument with properties:
 
   * className: class names to be added
   * onMouseDown: event handler will be called after the component's event handler
@@ -1174,8 +1186,6 @@ If you are using Custom Headers then you need to add `SidebarHeader` component u
 ## The timeline header doesn't fix to the top of the container when I scroll down.
 
 you need to add sticky to the header like [this example](https://github.com/FoothillSolutions/react-calendar-timeline/tree/dest-build/examples#sticky-header).
-
-```
 
 ## I'm using Babel with Rollup or Webpack 2+ and I'm getting strange bugs with click events
 
