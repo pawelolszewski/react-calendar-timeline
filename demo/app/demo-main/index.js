@@ -15,12 +15,13 @@ import Timeline, {
 
 import generateFakeData from '../generate-fake-data'
 
+
 var minTime = moment()
-  .add(-6, 'months')
-  .valueOf()
+.add(-6, 'months')
+.valueOf()
 var maxTime = moment()
-  .add(6, 'months')
-  .valueOf()
+.add(6, 'months')
+.valueOf()
 
 var keys = {
   groupIdKey: 'id',
@@ -38,25 +39,126 @@ export default class App extends Component {
   constructor(props) {
     super(props)
 
+    const visibleTimeStart = moment().startOf('day').hour(7).minute(0).valueOf()
+    const visibleTimeEnd = moment().startOf('day').hour(24).minute(0).valueOf()
+
     const { groups, items } = generateFakeData()
-    const defaultTimeStart = moment()
-      .startOf('day')
-      .toDate()
-    const defaultTimeEnd = moment()
-      .startOf('day')
-      .add(1, 'day')
-      .toDate()
+    // const defaultTimeStart = moment()
+    //   .startOf('day')
+    //   .toDate()
+    // const defaultTimeEnd = moment()
+    //   .startOf('day')
+    //   .add(1, 'day')
+    //   .toDate()
 
     this.state = {
       groups,
       items,
-      defaultTimeStart,
-      defaultTimeEnd
+      itemToAdd: {},
+      visibleTimeStart,
+      visibleTimeEnd,
+      startTimeToAdd: null,
+      startGroupToAdd: null,
+      openGroups: { ...groups },
     }
   }
 
+  handleTimeChangeFirst = (
+    avisibleTimeStart,
+    avisibleTimeEnd,
+    updateScrollCanvas,
+  ) => {
+    updateScrollCanvas(
+      moment(this.state.visibleTimeStart).valueOf(),
+      moment(this.state.visibleTimeEnd).valueOf(),
+    )
+    // this.setState({ visibleTimeStart, visibleTimeEnd });
+  }
+
+
   handleCanvasClick = (groupId, time) => {
     console.log('Canvas clicked', groupId, moment(time).format())
+  }
+
+  handleCanvasClickStart = (groupId, time) => {
+    console.log('Canvas click start', groupId, moment(time).format())
+
+    const itemToAdd = {
+      id: "2093",
+      group: [groupId],
+      start: time,
+      end: time,
+      title: 'New reservation',
+      canMove: false,
+      // canResize: true,
+    }
+
+
+    this.setState({
+      itemToAdd,
+      startGroupToAdd: groupId,
+    })
+  }
+
+  handleMouseMove = (groupId, time) => {
+    const { itemToAdd, groups, startGroupToAdd, openGroups } = this.state
+    console.log('Canvas move', groupId, moment(time).format())
+
+    if (groups[groupId].root) {
+      return
+    }
+
+    let newGroups = [];
+
+    if (startGroupToAdd === groupId) {
+      newGroups = startGroupToAdd
+    }
+    else {
+      // Create range.
+      newGroups = [...Array(Math.abs(startGroupToAdd - groupId) + 1).keys()].map(i => i + Math.min(startGroupToAdd, groupId));
+      newGroups  = newGroups.filter((gId) => !openGroups[gId].root && openGroups[openGroups[gId].parent])
+    }
+
+    this.setState({
+      itemToAdd: {...itemToAdd, end: time, group: newGroups},
+    })
+  }
+
+  handleCanvasClickEnd = (groupId, time) => {
+    // const { items, startTimeToAdd, startGroupToAdd } = this.state
+    //
+    // if (startTimeToAdd === null || startGroupToAdd === null) return
+    //
+    // const itemsToAdd = []
+    //
+    // let id = items.length
+    // let currentGroupId = startGroupToAdd
+    // console.log(currentGroupId)
+    // while (currentGroupId <= groupId) {
+    //   itemsToAdd.push(Object.assign({}, items[items.length - 1], {
+    //     id: id,
+    //     start: startTimeToAdd,
+    //     end: time,
+    //     group: currentGroupId,
+    //     title: 'New item'
+    //   }))
+    //   id++
+    //   currentGroupId++
+    // }
+    //
+
+    // console.log(itemsToAdd)
+    // console.log("new groups", this.state.newItemsGroupsGroups)
+    const { itemToAdd } = this.state
+
+    this.setState({
+      // items: [...items, ...itemsToAdd],
+      // itemToAdd: [],
+      startGroupToAdd: null,
+    })
+
+
+    console.log('Canvas click end', groupId, moment(time).format())
   }
 
   handleCanvasDoubleClick = (groupId, time) => {
@@ -83,26 +185,26 @@ export default class App extends Component {
     console.log('Context Menu: ' + itemId, moment(time).format())
   }
 
-  handleItemMove = (itemId, dragTime, newGroupOrder) => {
-    const { items, groups } = this.state
-
-    const group = groups[newGroupOrder]
-
-    this.setState({
-      items: items.map(
-        item =>
-          item.id === itemId
-            ? Object.assign({}, item, {
-                start: dragTime,
-                end: dragTime + (item.end - item.start),
-                group: group.id
-              })
-            : item
-      )
-    })
-
-    console.log('Moved', itemId, dragTime, newGroupOrder)
-  }
+  // handleItemMove = (itemId, dragTime, newGroupOrder) => {
+  //   const { items, groups } = this.state
+  //
+  //   const group = groups[newGroupOrder]
+  //
+  //   this.setState({
+  //     items: items.map(
+  //       item =>
+  //         item.id === itemId
+  //           ? Object.assign({}, item, {
+  //             start: dragTime,
+  //             end: dragTime + (item.end - item.start),
+  //             group: group.id
+  //           })
+  //           : item
+  //     )
+  //   })
+  //
+  //   console.log('Moved', itemId, dragTime, newGroupOrder)
+  // }
 
   handleItemResize = (itemId, time, edge) => {
     const { items } = this.state
@@ -112,9 +214,9 @@ export default class App extends Component {
         item =>
           item.id === itemId
             ? Object.assign({}, item, {
-                start: edge === 'left' ? time : item.start,
-                end: edge === 'left' ? item.end : time
-              })
+              start: edge === 'left' ? time : item.start,
+              end: edge === 'left' ? item.end : time
+            })
             : item
       )
     })
@@ -122,18 +224,18 @@ export default class App extends Component {
     console.log('Resized', itemId, time, edge)
   }
 
-  // this limits the timeline to -6 months ... +6 months
-  handleTimeChange = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
-    if (visibleTimeStart < minTime && visibleTimeEnd > maxTime) {
-      updateScrollCanvas(minTime, maxTime)
-    } else if (visibleTimeStart < minTime) {
-      updateScrollCanvas(minTime, minTime + (visibleTimeEnd - visibleTimeStart))
-    } else if (visibleTimeEnd > maxTime) {
-      updateScrollCanvas(maxTime - (visibleTimeEnd - visibleTimeStart), maxTime)
-    } else {
-      updateScrollCanvas(visibleTimeStart, visibleTimeEnd)
-    }
-  }
+  // // this limits the timeline to -6 months ... +6 months
+  // handleTimeChange = (visibleTimeStart, visibleTimeEnd, updateScrollCanvas) => {
+  //   if (visibleTimeStart < minTime && visibleTimeEnd > maxTime) {
+  //     updateScrollCanvas(minTime, maxTime)
+  //   } else if (visibleTimeStart < minTime) {
+  //     updateScrollCanvas(minTime, minTime + (visibleTimeEnd - visibleTimeStart))
+  //   } else if (visibleTimeEnd > maxTime) {
+  //     updateScrollCanvas(maxTime - (visibleTimeEnd - visibleTimeStart), maxTime)
+  //   } else {
+  //     updateScrollCanvas(visibleTimeStart, visibleTimeEnd)
+  //   }
+  // }
 
   moveResizeValidator = (action, item, time) => {
     if (time < new Date().getTime()) {
@@ -145,13 +247,42 @@ export default class App extends Component {
     return time
   }
 
+  toggleGroup = id => {
+    const { openGroups } = this.state
+    this.setState({
+      openGroups: {
+        ...openGroups,
+        [id]: !openGroups[id],
+      },
+    })
+  }
+
   render() {
-    const { groups, items, defaultTimeStart, defaultTimeEnd } = this.state
+    const { groups, items, visibleTimeStart, visibleTimeEnd, itemToAdd, openGroups,} = this.state
+    const allItems = [...items, itemToAdd]
+
+    // hide (filter) the groups that are closed, for the rest, patch their "title" and add some callbacks or padding
+    const newGroups = groups
+    .filter(g => g.root || openGroups[g.parent])
+    .map(group => {
+      return Object.assign({}, group, {
+        title: group.root ? (
+          <div
+            onClick={() => this.toggleGroup(parseInt(group.id))}
+            style={{ cursor: 'pointer' }}
+          >
+            {openGroups[parseInt(group.id)] ? '[-]' : '[+]'} {group.title}
+          </div>
+        ) : (
+          <div style={{ paddingLeft: 20 }}>{group.title}</div>
+        )
+      })
+    })
 
     return (
       <Timeline
-        groups={groups}
-        items={items}
+        groups={newGroups}
+        items={allItems}
         keys={keys}
         sidebarWidth={150}
         sidebarContent={<div>Above The Left</div>}
@@ -160,11 +291,15 @@ export default class App extends Component {
         canSelect
         itemsSorted
         itemTouchSendsClick={false}
-        stackItems
+        stackItems={false}
         itemHeightRatio={0.75}
-        defaultTimeStart={defaultTimeStart}
-        defaultTimeEnd={defaultTimeEnd}
+        visibleTimeStart={visibleTimeStart}
+        visibleTimeEnd={visibleTimeEnd}
+        onTimeChange={this.handleTimeChangeFirst}
         onCanvasClick={this.handleCanvasClick}
+        onCanvasClickStart={this.handleCanvasClickStart}
+        onCanvasClickEnd={this.handleCanvasClickEnd}
+        onMouseMove={this.handleMouseMove}
         onCanvasDoubleClick={this.handleCanvasDoubleClick}
         onCanvasContextMenu={this.handleCanvasContextMenu}
         onItemClick={this.handleItemClick}
@@ -173,7 +308,7 @@ export default class App extends Component {
         onItemMove={this.handleItemMove}
         onItemResize={this.handleItemResize}
         onItemDoubleClick={this.handleItemDoubleClick}
-        onTimeChange={this.handleTimeChange}
+        // onTimeChange={this.handleTimeChange}
         moveResizeValidator={this.moveResizeValidator}
       >
         <TimelineMarkers>
@@ -181,15 +316,15 @@ export default class App extends Component {
           <CustomMarker
             date={
               moment()
-                .startOf('day')
-                .valueOf() +
+              .startOf('day')
+              .valueOf() +
               1000 * 60 * 60 * 2
             }
           />
           <CustomMarker
             date={moment()
-              .add(3, 'day')
-              .valueOf()}
+            .add(3, 'day')
+            .valueOf()}
           >
             {({ styles }) => {
               const newStyles = { ...styles, backgroundColor: 'blue' }
