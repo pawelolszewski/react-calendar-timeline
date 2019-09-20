@@ -122,7 +122,7 @@ export default class Items extends Component {
           .map(item => {
             const itemGroup = _get(item, itemGroupKey)
             const tt = Object.keys(groupOrders)
-            .filter(key => itemGroup.includes(parseInt(key)))
+            .filter(key => itemGroup.includes(key) || itemGroup.includes(parseInt(key)))
             .reduce((obj, key) => {
               obj[key] = groupOrders[key];
               return obj;
