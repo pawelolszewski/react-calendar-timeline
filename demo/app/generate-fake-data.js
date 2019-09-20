@@ -2,7 +2,7 @@ import faker from "faker";
 import randomColor from "randomcolor";
 import moment from "moment";
 
-export default function(roomCount = 5, tableCount=8, itemCount = 40, daysInPast = 3) {
+export default function(roomCount = 2, tableCount=4, itemCount = 2, daysInPast = 1) {
   let randomSeed = Math.floor(Math.random() * 1000);
   let tableIds = [];
   let groups = [];

@@ -78,7 +78,7 @@ export default class Items extends Component {
       nextProps.canChangeGroup === this.props.canChangeGroup &&
       nextProps.canMove === this.props.canMove &&
       nextProps.canResize === this.props.canResize &&
-      nextProps.canSelect === this.props.canSelect     
+      nextProps.canSelect === this.props.canSelect
     )
   }
 
@@ -119,12 +119,20 @@ export default class Items extends Component {
       <div className="rct-items" style={{ pointerEvents: this.props.pointerEventsDisabled ? 'none' : 'auto' }}>
         {visibleItems
           .filter(item => sortedDimensionItems[_get(item, itemIdKey)])
-          .map(item => (
-            <Item
+          .map(item => {
+            const itemGroup = _get(item, itemGroupKey)
+            const tt = Object.keys(groupOrders)
+            .filter(key => itemGroup.includes(parseInt(key)))
+            .reduce((obj, key) => {
+              obj[key] = groupOrders[key];
+              return obj;
+            }, {});
+            // TODO: MOVE ->tt[0]
+            return(<Item
               key={_get(item, itemIdKey)}
               item={item}
               keys={this.props.keys}
-              order={groupOrders[_get(item, itemGroupKey)[0]] || groupOrders[_get(item, itemGroupKey)]}
+              order={tt[0] || groupOrders[_get(item, itemGroupKey)]}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }
@@ -166,7 +174,8 @@ export default class Items extends Component {
               itemRenderer={this.props.itemRenderer}
               scrollRef={this.props.scrollRef}
             />
-          ))}
+          )
+        })}
       </div>
     )
   }
