@@ -132,7 +132,7 @@ export default class Items extends Component {
               key={_get(item, itemIdKey)}
               item={item}
               keys={this.props.keys}
-              order={groupOrders[Object.keys(tt)[0]] || groupOrders[_get(item, itemGroupKey)]}
+              order={(Object.keys(tt)[0] && groupOrders[Object.keys(tt)[0]]) || groupOrders[_get(item, itemGroupKey)]}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }

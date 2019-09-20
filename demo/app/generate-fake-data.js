@@ -51,7 +51,7 @@ export default function(roomCount = 2, tableCount=4, itemCount = 2, daysInPast =
     itemGroup = faker.random.arrayElement(tableIds) + "",
     items.push({
       id: i + "",
-      group: itemGroup,
+      group: tableIds,
       // title: faker.hacker.phrase(),
       title: `Item: ${i} Group: ${itemGroup}`,
       start: startValue,
