@@ -541,7 +541,7 @@ export function stackTimelineItems(
  * @param {*} width
  * @param {*} buffer
  */
-export function getCanvasWidth(width, buffer = 3) {
+export function getCanvasWidth(width, buffer = 1) {
   return width * buffer
 }
 
@@ -658,9 +658,8 @@ export function getCanvasBoundariesFromVisibleTime(
   visibleTimeStart,
   visibleTimeEnd
 ) {
-  const zoom = visibleTimeEnd - visibleTimeStart
-  const canvasTimeStart = visibleTimeStart - (visibleTimeEnd - visibleTimeStart)
-  const canvasTimeEnd = canvasTimeStart + zoom * 3
+  const canvasTimeStart = visibleTimeStart - 1
+  const canvasTimeEnd = visibleTimeEnd + 1
   return [canvasTimeStart, canvasTimeEnd]
 }
 
