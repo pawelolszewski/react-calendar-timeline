@@ -89,7 +89,7 @@ export default class App extends Component {
       start: time,
       end: time,
       title: 'New reservation',
-      canMove: false,
+      canMove: true,
       // canResize: true,
     }
 
@@ -122,6 +122,21 @@ export default class App extends Component {
     this.setState({
       itemToAdd: {...itemToAdd, end: time, group: newGroups},
     })
+  }
+
+  verticalLineClassNamesForGroups = (timeStart, timeEnd, group) => {
+    debugger
+    const currentTimeStart = moment(timeStart)
+    const currentTimeEnd = moment(timeEnd)
+
+    // for (let holiday of holidays) {
+    //   if (
+    //     holiday.isSame(currentTimeStart, 'day') &&
+    //     holiday.isSame(currentTimeEnd, 'day')
+    //   ) {
+    //     return ['holiday']
+    //   }
+    // }
   }
 
   handleCanvasClickEnd = (groupId, time) => {
@@ -310,6 +325,7 @@ export default class App extends Component {
         onItemDoubleClick={this.handleItemDoubleClick}
         // onTimeChange={this.handleTimeChange}
         moveResizeValidator={this.moveResizeValidator}
+        verticalLineClassNamesForGroups={this.verticalLineClassNamesForGroups}
       >
         <TimelineMarkers>
           <TodayMarker />

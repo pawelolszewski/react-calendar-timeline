@@ -37,6 +37,8 @@ import {
   getSumOffset,
   getSumScroll,
 } from './utility/dom-helpers'
+import ColumnsForGroups
+  from './columns/ColumnsForGroups'
 
 export default class ReactCalendarTimeline extends Component {
   static propTypes = {
@@ -163,6 +165,7 @@ export default class ReactCalendarTimeline extends Component {
     }),
 
     verticalLineClassNamesForTime: PropTypes.func,
+    verticalLineClassNamesForGroups: PropTypes.func,
 
     children: PropTypes.node
   }
@@ -205,6 +208,7 @@ export default class ReactCalendarTimeline extends Component {
     onZoom: null,
 
     verticalLineClassNamesForTime: null,
+    verticalLineClassNamesForGroups: null,
 
     moveResizeValidator: null,
 
@@ -759,6 +763,32 @@ export default class ReactCalendarTimeline extends Component {
     )
   }
 
+  columnsForGroups(
+    canvasTimeStart,
+    canvasTimeEnd,
+    canvasWidth,
+    minUnit,
+    timeSteps,
+    height,
+    groups,
+    groupHeights,
+  ) {
+    return (
+      <ColumnsForGroups
+        canvasTimeStart={canvasTimeStart}
+        canvasTimeEnd={canvasTimeEnd}
+        canvasWidth={canvasWidth}
+        lineCount={_length(this.props.groups)}
+        minUnit={minUnit}
+        timeSteps={timeSteps}
+        height={height}
+        verticalLineClassNamesForGroups={this.props.verticalLineClassNamesForGroups}
+        groups={groups}
+        groupHeights={groupHeights}
+      />
+    )
+  }
+
   handleRowClick = (e, rowIndex) => {
     // shouldnt this be handled by the user, as far as when to deselect an item?
     if (this.state.selectedItem) {
@@ -890,6 +920,7 @@ export default class ReactCalendarTimeline extends Component {
     groupHeights,
     groupTops
   ) {
+    // debugger
     return (
       <Items
         canvasTimeStart={canvasTimeStart}
@@ -1138,6 +1169,16 @@ export default class ReactCalendarTimeline extends Component {
                       minUnit,
                       timeSteps,
                       height
+                    )}
+                    {this.columnsForGroups(
+                      canvasTimeStart,
+                      canvasTimeEnd,
+                      canvasWidth,
+                      minUnit,
+                      timeSteps,
+                      height,
+                      groups,
+                      groupHeights,
                     )}
                     {this.rows(canvasWidth, groupHeights, groups)}
                     {this.items(
