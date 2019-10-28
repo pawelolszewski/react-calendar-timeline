@@ -44,7 +44,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    box-sizing: content-box;
+    box-sizing: border-box;
     margin: 0;
     border-bottom: 1px solid #bbb; }
     .react-calendar-timeline .rct-sidebar .rct-sidebar-row.rct-sidebar-row-odd {
@@ -73,7 +73,7 @@
   .react-calendar-timeline .rct-horizontal-lines .rct-hl-even,
   .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
     border-bottom: 1px solid #bbb;
-    box-sizing: content-box;
+    box-sizing: border-box;
     z-index: 40; }
   .react-calendar-timeline .rct-horizontal-lines .rct-hl-odd {
     background: rgba(0, 0, 0, 0.05); }
