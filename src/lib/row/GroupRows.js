@@ -60,7 +60,7 @@ export default class GroupRows extends Component {
           horizontalLineClassNamesForGroup={horizontalLineClassNamesForGroup}
           style={{
             width: `${canvasWidth}px`,
-            height: `${groupHeights[i] - 1}px`
+            height: `${groupHeights[i]}px`
           }}
         />
       )

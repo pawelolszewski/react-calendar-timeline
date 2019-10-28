@@ -7,6 +7,47 @@ and this project adheres (more or less) to [Semantic Versioning](http://semver.o
 
 ## Unreleased
 
+## 0.26.6
+
+* fix `visibleTimeStart`, `visibleTimeEnd` and `onTimeChange` not working as expected in controlled mode @ilaiwi
+
+### examples
+
+two new examples
+
+#### Controlled scroll
+
+Controlled visible port of the calendar using `visibleTimeStart` and `visibleTimeEnd`. This also limits scrolling by mouse and adds two buttons to change the visible port of the calendar
+
+[Example Codesandbox](https://codesandbox.io/s/timeline-demo-controlled-visible-time-no-scroll-659jb)
+
+#### Programmatically Scrolling
+
+Using controlled scroll and react-spring to trigger scrolling and create an animation.
+
+[Example Codesandbox](https://codesandbox.io/s/confident-waterfall-3kq2503y8p)
+
+## 0.26.5
+
+* improve performance by:
+  - eliminate extra call of layout on state update @ilaiwi
+  - eliminate unmounting and mounting of Interval Component @ilaiwi
+
+## 0.26.4
+
+* fix `react-calendar-timeline` not working with `react-hot-loader` #607 @ilaiwi + @westn
+* add documentation for `stackItems` format #661 @tyson-kubota
+
+## 0.26.3
+
+* add documentation for `onItemDeselect` #350 @ilaiwi
+* solve a bug where `onItemDeselect` is not triggered as expected for several item clicks #350 @ilaiwi
+* fix row height on browser scaling #615 @gaston-niglia 
+
+### Packages
+
+update to `node-sass@4.12.0` for newer versions of node. 
+
 ## 0.26.2
 
 * render the items layer after columns and rows for layring @ilaiwi

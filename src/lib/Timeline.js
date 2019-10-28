@@ -8,7 +8,6 @@ import Columns from './columns/Columns'
 import GroupRows from './row/GroupRows'
 import ScrollElement from './scroll/ScrollElement'
 import MarkerCanvas from './markers/MarkerCanvas'
-
 import windowResizeDetector from '../resize-detector/window'
 
 import {
@@ -279,6 +278,10 @@ export default class ReactCalendarTimeline extends Component {
   constructor(props) {
     super(props)
 
+    this.getSelected = this.getSelected.bind(this)
+    this.hasSelectedItem = this.hasSelectedItem.bind(this)
+    this.isItemSelected= this.isItemSelected.bind(this)
+
     let visibleTimeStart = null
     let visibleTimeEnd = null
 
@@ -419,7 +422,7 @@ export default class ReactCalendarTimeline extends Component {
         )
       )
     }
-
+    
     return derivedState
   }
 
@@ -449,7 +452,11 @@ export default class ReactCalendarTimeline extends Component {
         (this.state.visibleTimeStart - this.state.canvasTimeStart) /
         newZoom
     )
-    const componentScrollLeft = Math.round(this.scrollComponent.scrollLeft)
+    const componentScrollLeft = Math.round(
+      prevState.width *
+        (prevState.visibleTimeStart - prevState.canvasTimeStart) /
+        oldZoom
+    )
     if (componentScrollLeft !== scrollLeft) {
       this.scrollComponent.scrollLeft = scrollLeft
       this.scrollHeaderRef.scrollLeft = scrollLeft
@@ -501,18 +508,6 @@ export default class ReactCalendarTimeline extends Component {
 
   onScroll = scrollX => {
     const width = this.state.width
-    let newScrollX = scrollX
-    // move the virtual canvas if needed
-    // if scrollX is less...i dont know how to explain the logic here
-    if (newScrollX < width * 0.5) {
-      newScrollX += width
-    }
-    if (newScrollX > width * 1.5) {
-      newScrollX -= width
-    }
-
-    this.scrollHeaderRef.scrollLeft = newScrollX
-    this.scrollComponent.scrollLeft = newScrollX
 
     const canvasTimeStart = this.state.canvasTimeStart
 
@@ -594,7 +589,7 @@ export default class ReactCalendarTimeline extends Component {
 
   selectItem = (item, clickType, e) => {
     if (
-      this.state.selectedItem === item ||
+      this.isItemSelected(item) ||
       (this.props.itemTouchSendsClick && clickType === 'touch')
     ) {
       if (item && this.props.onItemClick) {
@@ -791,7 +786,7 @@ export default class ReactCalendarTimeline extends Component {
 
   handleRowClick = (e, rowIndex) => {
     // shouldnt this be handled by the user, as far as when to deselect an item?
-    if (this.state.selectedItem) {
+    if (this.hasSelectedItem()) {
       this.selectItem(null)
     }
 
@@ -993,7 +988,15 @@ export default class ReactCalendarTimeline extends Component {
     )
   }
 
-  groups
+  /**
+   * check if child of type TimelineHeader
+   * refer to for explanation https://github.com/gaearon/react-hot-loader#checking-element-types 
+   */
+  isTimelineHeader = (child) => {
+    if(child.type === undefined) return false
+    return child.type.secretKey ===TimelineHeaders.secretKey
+  }
+  
   childrenWithProps(
     canvasTimeStart,
     canvasTimeEnd,
@@ -1028,17 +1031,14 @@ export default class ReactCalendarTimeline extends Component {
       keys: this.props.keys,
       groupHeights: groupHeights,
       groupTops: groupTops,
-      selected:
-        this.state.selectedItem && !this.props.selected
-          ? [this.state.selectedItem]
-          : this.props.selected || [],
+      selected: this.getSelected(),
       height: height,
       minUnit: minUnit,
       timeSteps: timeSteps
     }
 
     return React.Children.map(childArray, child => {
-      if (child.type !== TimelineHeaders) {
+      if (!this.isTimelineHeader(child)) {
         return React.cloneElement(child, childProps)
       } else {
         return null
@@ -1050,7 +1050,7 @@ export default class ReactCalendarTimeline extends Component {
     if (this.props.children) {
       let headerRenderer
       React.Children.map(this.props.children, child => {
-        if (child.type === TimelineHeaders) {
+        if (this.isTimelineHeader(child)) {
           headerRenderer = child
         }
       })
@@ -1066,6 +1066,21 @@ export default class ReactCalendarTimeline extends Component {
     )
   }
 
+  getSelected() {
+    return this.state.selectedItem && !this.props.selected
+      ? [this.state.selectedItem]
+      : this.props.selected || [];
+  }
+
+  hasSelectedItem(){
+    if(!Array.isArray(this.props.selected)) return !!this.state.selectedItem
+    return this.props.selected.length > 0
+  }
+
+  isItemSelected(itemId){
+    const selectedItems = this.getSelected()
+    return selectedItems.some(i => i === itemId)
+  }
   getScrollElementRef = el => {
     this.props.scrollRef(el)
     this.scrollComponent = el

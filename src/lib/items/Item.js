@@ -413,7 +413,6 @@ export default class Item extends Component {
 
   componentDidUpdate(prevProps) {
     this.cacheDataFromProps(this.props)
-
     let { interactMounted } = this.state
     const couldDrag = prevProps.selected && this.canMove(prevProps)
     const couldResizeLeft =
@@ -426,41 +425,49 @@ export default class Item extends Component {
     const willBeAbleToResizeRight =
       this.props.selected && this.canResizeRight(this.props)
 
-    if (this.props.selected && !interactMounted) {
-      this.item && this.item.forEach((el) => {
-        this.mountInteract(el)
-      })
-      interactMounted = true
-    }
-
-    if (
-      interactMounted &&
-      (couldResizeLeft !== willBeAbleToResizeLeft ||
-        couldResizeRight !== willBeAbleToResizeRight)
-    ) {
-      const leftResize = this.props.useResizeHandle ? this.dragLeft : true
-      const rightResize = this.props.useResizeHandle ? this.dragRight : true
-
-      this.item.forEach((el) => {
-        interact(el).resizable({
-          enabled: willBeAbleToResizeLeft || willBeAbleToResizeRight,
-          edges: {
-            top: false,
-            bottom: false,
-            left: willBeAbleToResizeLeft && leftResize,
-            right: willBeAbleToResizeRight && rightResize
-          }
+    if(!!this.item){
+      if (this.props.selected && !interactMounted) {
+        this.item && this.item.forEach((el) => {
+          this.mountInteract(el)
         })
-      })
+        interactMounted = true
+      }
+      if (
+        interactMounted &&
+        (couldResizeLeft !== willBeAbleToResizeLeft ||
+          couldResizeRight !== willBeAbleToResizeRight)
+      ) {
+        const leftResize = this.props.useResizeHandle ? this.dragLeft : true
+        const rightResize = this.props.useResizeHandle ? this.dragRight : true
+
+        this.item.forEach((el) => {
+          interact(el).resizable({
+            enabled: willBeAbleToResizeLeft || willBeAbleToResizeRight,
+            edges: {
+              top: false,
+              bottom: false,
+              left: willBeAbleToResizeLeft && leftResize,
+              right: willBeAbleToResizeRight && rightResize
+            }
+          })
+        })
+      }
+      if (interactMounted && couldDrag !== willBeAbleToDrag) {
+        this.item.forEach((el) => {
+          interact(el).draggable({ enabled: willBeAbleToDrag })
+        })
+      }
+      // if (this.state.interactMounted && prevProps.selected && !this.props.selected) {
+      //   this.setState({interactMounted: false})
+      // }
     }
-    if (interactMounted && couldDrag !== willBeAbleToDrag) {
-      this.item.forEach((el) => {
-        interact(el).draggable({ enabled: willBeAbleToDrag })
-      })
+    else{
+      interactMounted= false;
     }
-    // if (this.state.interactMounted && prevProps.selected && !this.props.selected) {
-    //   this.setState({interactMounted: false})
-    // }
+    this.setState({
+      interactMounted,
+    })
+
   }
 
   onMouseDown = e => {
