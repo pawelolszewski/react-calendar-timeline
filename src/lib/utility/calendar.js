@@ -637,13 +637,12 @@ export function getItemWithInteractions({
     resizingEdge,
     resizeTime
   })
-  // TODO: MOVE -> groups[newGroupOrder]
   const newItem = {
     ...item,
     [keys.itemTimeStartKey]: itemTimeStart,
     [keys.itemTimeEndKey]: itemTimeEnd,
     [keys.itemGroupKey]: isDragging
-      ? _get(groups[newGroupOrder], keys.groupIdKey)
+      ? newGroupOrder
       : _get(item, keys.itemGroupKey)
   }
   return newItem

@@ -113,7 +113,7 @@ export default class Item extends Component {
       nextProps.canMove !== this.props.canMove ||
       nextProps.canResizeLeft !== this.props.canResizeLeft ||
       nextProps.canResizeRight !== this.props.canResizeRight ||
-      nextProps.dimensions !== this.props.dimensions
+      !deepObjectCompare(nextProps.dimensions, this.props.dimensions)
     return shouldUpdate
   }
 
@@ -171,7 +171,7 @@ export default class Item extends Component {
     return (e.pageX - offset + scrolls.scrollLeft) * ratio + this.props.canvasTimeStart;
   }
 
-  dragGroupDelta(e) {
+  dragGroupDelta(e, itemIndex) {
     const { groupTops, order } = this.props
     if (this.state.dragging) {
       if (!this.props.canChangeGroup) {
@@ -185,14 +185,14 @@ export default class Item extends Component {
       for (var key of Object.keys(groupTops)) {
         var groupTop = groupTops[key]
         if (e.pageY - offset + scrolls.scrollTop > groupTop) {
-          groupDelta = parseInt(key, 10) - order.index
+          groupDelta = parseInt(key, 10) - order[(Object.keys(order))[itemIndex]].index
         } else {
           break
         }
       }
 
-      if (this.props.order.index + groupDelta < 0) {
-        return 0 - this.props.order.index
+      if (order[(Object.keys(order))[itemIndex]].index + groupDelta < 0) {
+        return 0 - order[(Object.keys(order))[0]].index
       } else {
         return groupDelta
       }
@@ -221,7 +221,7 @@ export default class Item extends Component {
     }
   }
 
-  mountInteract(item) {
+  mountInteract(item, itemIndex) {
     const leftResize = this.props.useResizeHandle ? ".rct-item-handler-resize-left" : true
     const rightResize = this.props.useResizeHandle ? ".rct-item-handler-resize-right" : true
 
@@ -260,7 +260,7 @@ export default class Item extends Component {
       .on('dragmove', e => {
         if (this.state.dragging) {
           let dragTime = this.dragTime(e)
-          let dragGroupDelta = this.dragGroupDelta(e)
+          let dragGroupDelta = this.dragGroupDelta(e, itemIndex)
           if (this.props.moveResizeValidator) {
             dragTime = this.props.moveResizeValidator(
               'move',
@@ -273,7 +273,8 @@ export default class Item extends Component {
             this.props.onDrag(
               this.itemId,
               dragTime,
-              this.props.order.index + dragGroupDelta
+              this.props.order,
+              dragGroupDelta
             )
           }
 
@@ -298,8 +299,7 @@ export default class Item extends Component {
 
             this.props.onDrop(
               this.itemId,
-              dragTime,
-              this.props.order.index + this.dragGroupDelta(e)
+              dragTime
             )
           }
 
@@ -427,8 +427,8 @@ export default class Item extends Component {
 
     if(!!this.item){
       if (this.props.selected && !interactMounted) {
-        this.item && this.item.forEach((el) => {
-          this.mountInteract(el)
+        this.item && this.item.forEach((el, index) => {
+          this.mountInteract(el, index)
         })
         interactMounted = true
       }

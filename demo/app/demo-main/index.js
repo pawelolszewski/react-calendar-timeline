@@ -124,20 +124,6 @@ export default class App extends Component {
     })
   }
 
-  verticalLineClassNamesForGroups = (timeStart, timeEnd, group) => {
-    debugger
-    const currentTimeStart = moment(timeStart)
-    const currentTimeEnd = moment(timeEnd)
-
-    // for (let holiday of holidays) {
-    //   if (
-    //     holiday.isSame(currentTimeStart, 'day') &&
-    //     holiday.isSame(currentTimeEnd, 'day')
-    //   ) {
-    //     return ['holiday']
-    //   }
-    // }
-  }
 
   handleCanvasClickEnd = (groupId, time) => {
     // const { items, startTimeToAdd, startGroupToAdd } = this.state
@@ -325,7 +311,6 @@ export default class App extends Component {
         onItemDoubleClick={this.handleItemDoubleClick}
         // onTimeChange={this.handleTimeChange}
         moveResizeValidator={this.moveResizeValidator}
-        verticalLineClassNamesForGroups={this.verticalLineClassNamesForGroups}
       >
         <TimelineMarkers>
           <TodayMarker />

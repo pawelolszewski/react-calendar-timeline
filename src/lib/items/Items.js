@@ -127,12 +127,11 @@ export default class Items extends Component {
               obj[key] = groupOrders[key];
               return obj;
             }, {});
-            // TODO: MOVE -> groupOrders[Object.keys(tt)[0]] - should be whole
             return(<Item
               key={_get(item, itemIdKey)}
               item={item}
               keys={this.props.keys}
-              order={(Object.keys(tt)[0] && groupOrders[Object.keys(tt)[0]]) || groupOrders[_get(item, itemGroupKey)]}
+              order={tt || groupOrders[_get(item, itemGroupKey)]}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }

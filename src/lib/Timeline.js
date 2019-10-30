@@ -422,7 +422,7 @@ export default class ReactCalendarTimeline extends Component {
         )
       )
     }
-    
+
     return derivedState
   }
 
@@ -682,7 +682,20 @@ export default class ReactCalendarTimeline extends Component {
     return time
   }
 
-  dragItem = (item, dragTime, newGroupOrder) => {
+  dragItem = (item, dragTime, oldGroup, dragGroupDelta) => {
+    const { groups } = this.props
+    if (typeof groups[oldGroup[Object.keys(oldGroup)[Object.keys(oldGroup).length - 1]].index + dragGroupDelta] === 'undefined') {
+      return ;
+    }
+    let newGroupOrder = Object.keys(oldGroup).map((gr) => {
+      // TODO: moving separated
+
+      while (typeof groups[oldGroup[gr].index + dragGroupDelta] !== 'undefined'
+      && groups[oldGroup[gr].index + dragGroupDelta].root) {
+        dragGroupDelta++
+      }
+      return (oldGroup[gr].index + dragGroupDelta)
+    })
     let newGroup = this.props.groups[newGroupOrder]
     const keys = this.props.keys
 
@@ -701,10 +714,10 @@ export default class ReactCalendarTimeline extends Component {
     })
   }
 
-  dropItem = (item, dragTime, newGroupOrder) => {
+  dropItem = (item, dragTime) => {
     this.setState({ draggingItem: null, dragTime: null, dragGroupTitle: null })
     if (this.props.onItemMove) {
-      this.props.onItemMove(item, dragTime, newGroupOrder)
+      this.props.onItemMove(item, dragTime, this.state.newGroupOrder)
     }
   }
 
@@ -990,13 +1003,13 @@ export default class ReactCalendarTimeline extends Component {
 
   /**
    * check if child of type TimelineHeader
-   * refer to for explanation https://github.com/gaearon/react-hot-loader#checking-element-types 
+   * refer to for explanation https://github.com/gaearon/react-hot-loader#checking-element-types
    */
   isTimelineHeader = (child) => {
     if(child.type === undefined) return false
     return child.type.secretKey ===TimelineHeaders.secretKey
   }
-  
+
   childrenWithProps(
     canvasTimeStart,
     canvasTimeEnd,

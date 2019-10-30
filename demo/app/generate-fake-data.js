@@ -2,7 +2,7 @@ import faker from "faker";
 import randomColor from "randomcolor";
 import moment from "moment";
 
-export default function(roomCount = 2, tableCount=4, itemCount = 2, daysInPast = 1) {
+export default function(roomCount = 2, tableCount=4, itemCount = 3, daysInPast = 1) {
   let randomSeed = Math.floor(Math.random() * 1000);
   let tableIds = [];
   let groups = [];
@@ -51,7 +51,7 @@ export default function(roomCount = 2, tableCount=4, itemCount = 2, daysInPast =
     itemGroup = faker.random.arrayElement(tableIds) + "",
     items.push({
       id: i + "",
-      group: tableIds,
+      group: [2,3],
       // title: faker.hacker.phrase(),
       title: `Item: ${i} Group: ${itemGroup}`,
       start: startValue,
