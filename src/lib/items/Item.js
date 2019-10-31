@@ -192,7 +192,7 @@ export default class Item extends Component {
       }
 
       if (order[(Object.keys(order))[itemIndex]].index + groupDelta < 0) {
-        return 0 - order[(Object.keys(order))[0]].index
+        return 0 - order[(Object.keys(order))[itemIndex]].index
       } else {
         return groupDelta
       }

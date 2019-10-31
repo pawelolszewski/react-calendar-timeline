@@ -694,7 +694,7 @@ export default class ReactCalendarTimeline extends Component {
       && groups[oldGroup[gr].index + dragGroupDelta].root) {
         dragGroupDelta++
       }
-      return (oldGroup[gr].index + dragGroupDelta)
+      return groups[oldGroup[gr].index + dragGroupDelta].id
     })
     let newGroup = this.props.groups[newGroupOrder]
     const keys = this.props.keys
