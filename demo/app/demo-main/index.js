@@ -59,7 +59,10 @@ export default class App extends Component {
       visibleTimeEnd,
       startTimeToAdd: null,
       startGroupToAdd: null,
-      openGroups: { ...groups },
+      // selected: Array.from(items, (v, k) => v.id),
+      openGroups: Object.assign({},
+        ...groups.filter(item => item.root && !item.collapsed).
+          map(item => ({ [item['id']]: true }))),
     }
   }
 
@@ -82,17 +85,23 @@ export default class App extends Component {
 
   handleCanvasClickStart = (groupId, time) => {
     console.log('Canvas click start', groupId, moment(time).format())
+    const { groups } = this.state
 
-    const itemToAdd = {
-      id: "2093",
-      group: [groupId],
-      start: time,
-      end: time,
-      title: 'New reservation',
-      canMove: true,
-      // canResize: true,
+    const gr = groups.find(x => x.id === groupId)
+    if (gr && gr.root) {
+      this.toggleGroup(groupId)
+      return
     }
 
+    const itemToAdd = {
+      // TODO: change this!
+      id: 'new',
+      group: [groupId],
+      start: moment(time),
+      // title: 'New reservation',
+      canMove: false,
+      // canResize: true,
+    }
 
     this.setState({
       itemToAdd,

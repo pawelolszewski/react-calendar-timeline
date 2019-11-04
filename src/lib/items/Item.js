@@ -28,6 +28,7 @@ export default class Item extends Component {
     canvasTimeEnd: PropTypes.number.isRequired,
     canvasWidth: PropTypes.number.isRequired,
     order: PropTypes.object,
+    invisibleGroups: PropTypes.array,
 
     dragSnap: PropTypes.number,
     minResizeWidth: PropTypes.number,
@@ -182,17 +183,19 @@ export default class Item extends Component {
       const offset = getSumOffset(this.props.scrollRef).offsetTop
       const scrolls = getSumScroll(this.props.scrollRef)
 
+      const index = order[itemIndex].index
+
       for (var key of Object.keys(groupTops)) {
         var groupTop = groupTops[key]
         if (e.pageY - offset + scrolls.scrollTop > groupTop) {
-          groupDelta = parseInt(key, 10) - order[(Object.keys(order))[itemIndex]].index
+          groupDelta = parseInt(key, 10) - index
         } else {
           break
         }
       }
 
-      if (order[(Object.keys(order))[itemIndex]].index + groupDelta < 0) {
-        return 0 - order[(Object.keys(order))[itemIndex]].index
+      if (index + groupDelta < 0) {
+        return 0 - index
       } else {
         return groupDelta
       }
@@ -299,7 +302,8 @@ export default class Item extends Component {
 
             this.props.onDrop(
               this.itemId,
-              dragTime
+              dragTime,
+              this.props.invisibleGroups
             )
           }
 
@@ -411,7 +415,13 @@ export default class Item extends Component {
     return !!props.canMove
   }
 
+  componentDidMount() {
+    this.enableInteract({})
+  }
   componentDidUpdate(prevProps) {
+    this.enableInteract(prevProps)
+  }
+  enableInteract(prevProps) {
     this.cacheDataFromProps(this.props)
     let { interactMounted } = this.state
     const couldDrag = prevProps.selected && this.canMove(prevProps)
@@ -428,7 +438,7 @@ export default class Item extends Component {
     if(!!this.item){
       if (this.props.selected && !interactMounted) {
         this.item && this.item.forEach((el, index) => {
-          this.mountInteract(el, index)
+          this.mountInteract(el, this.props.item.group[index])
         })
         interactMounted = true
       }

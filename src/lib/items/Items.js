@@ -121,8 +121,17 @@ export default class Items extends Component {
           .filter(item => sortedDimensionItems[_get(item, itemIdKey)])
           .map(item => {
             const itemGroup = _get(item, itemGroupKey)
-            const tt = Object.keys(groupOrders)
-            .filter(key => itemGroup.includes(key) || itemGroup.includes(parseInt(key)))
+            let invisibleGroups= [];
+            const tt = itemGroup && itemGroup
+            .filter(key => {
+              if (key in groupOrders || (parseInt(key)) in groupOrders) {
+                return true
+              }
+              else {
+                invisibleGroups.push(key)
+                return false
+              }
+            })
             .reduce((obj, key) => {
               obj[key] = groupOrders[key];
               return obj;
@@ -132,12 +141,13 @@ export default class Items extends Component {
               item={item}
               keys={this.props.keys}
               order={tt || groupOrders[_get(item, itemGroupKey)]}
+              invisibleGroups={invisibleGroups}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions
               }
               //Automatically select all items.
-              // selected={true}
-              selected={this.isSelected(item, itemIdKey)}
+              selected={true}
+              // selected={this.isSelected(item, itemIdKey)}
               canChangeGroup={
                 _get(item, 'canChangeGroup') !== undefined
                   ? _get(item, 'canChangeGroup')

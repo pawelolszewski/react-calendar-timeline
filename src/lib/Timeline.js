@@ -684,40 +684,64 @@ export default class ReactCalendarTimeline extends Component {
 
   dragItem = (item, dragTime, oldGroup, dragGroupDelta) => {
     const { groups } = this.props
-    if (typeof groups[oldGroup[Object.keys(oldGroup)[Object.keys(oldGroup).length - 1]].index + dragGroupDelta] === 'undefined') {
-      return ;
+
+    let groupsKey = []
+    if (dragGroupDelta <= 0) {
+      groupsKey = Object.keys(oldGroup)
     }
-    let newGroupOrder = Object.keys(oldGroup).map((gr) => {
-      // TODO: moving separated
+    else {
+      groupsKey = Object.keys(oldGroup).reverse()
+    }
+
+    let newGroupOrder = []
+    let oldGroupOrder = groupsKey
+    let error = false
+
+      groupsKey.map((gr) => {
 
       while (typeof groups[oldGroup[gr].index + dragGroupDelta] !== 'undefined'
       && groups[oldGroup[gr].index + dragGroupDelta].root) {
-        dragGroupDelta++
+        if (dragGroupDelta <= 0) {
+          dragGroupDelta++
+        }
+        else {
+          dragGroupDelta--
+        }
       }
-      return groups[oldGroup[gr].index + dragGroupDelta].id
+      if (typeof groups[oldGroup[gr].index + dragGroupDelta] !== 'undefined') {
+        newGroupOrder.push(groups[oldGroup[gr].index + dragGroupDelta].id)
+      }
+      else {
+        error = true
+      }
     })
+
+    if (error) {
+      newGroupOrder = oldGroupOrder
+    }
+
     let newGroup = this.props.groups[newGroupOrder]
     const keys = this.props.keys
 
     this.setState({
       draggingItem: item,
       dragTime: dragTime,
-      newGroupOrder: newGroupOrder,
-      dragGroupTitle: newGroup ? _get(newGroup, keys.groupLabelKey) : ''
+      newGroupOrder: dragGroupDelta <= 0 ? newGroupOrder : newGroupOrder.reverse(),
+      dragGroupTitle: newGroup ? _get(newGroup, keys.groupLabelKey) : '',
     })
 
     this.updatingItem({
       eventType: 'move',
       itemId: item,
       time: dragTime,
-      newGroupOrder
+      newGroupOrder,
     })
   }
 
-  dropItem = (item, dragTime) => {
+  dropItem = (item, dragTime, invisibleGroups) => {
     this.setState({ draggingItem: null, dragTime: null, dragGroupTitle: null })
     if (this.props.onItemMove) {
-      this.props.onItemMove(item, dragTime, this.state.newGroupOrder)
+      this.props.onItemMove(item, dragTime, [...this.state.newGroupOrder, ...invisibleGroups])
     }
   }
 
