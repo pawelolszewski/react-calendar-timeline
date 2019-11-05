@@ -183,7 +183,7 @@ export default class Item extends Component {
       const offset = getSumOffset(this.props.scrollRef).offsetTop
       const scrolls = getSumScroll(this.props.scrollRef)
 
-      const index = order[itemIndex].index
+      const index = order[Object.keys(order)[itemIndex]].index
 
       for (var key of Object.keys(groupTops)) {
         var groupTop = groupTops[key]
@@ -438,7 +438,7 @@ export default class Item extends Component {
     if(!!this.item){
       if (this.props.selected && !interactMounted) {
         this.item && this.item.forEach((el, index) => {
-          this.mountInteract(el, this.props.item.group[index])
+          this.mountInteract(el, index)
         })
         interactMounted = true
       }
