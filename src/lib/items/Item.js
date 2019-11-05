@@ -29,7 +29,7 @@ export default class Item extends Component {
     canvasWidth: PropTypes.number.isRequired,
     order: PropTypes.object,
     invisibleGroups: PropTypes.array,
-    itemOrder: PropTypes.object,
+    itemOrder: PropTypes.array,
 
     dragSnap: PropTypes.number,
     minResizeWidth: PropTypes.number,
