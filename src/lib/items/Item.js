@@ -29,6 +29,7 @@ export default class Item extends Component {
     canvasWidth: PropTypes.number.isRequired,
     order: PropTypes.object,
     invisibleGroups: PropTypes.array,
+    itemOrder: PropTypes.object,
 
     dragSnap: PropTypes.number,
     minResizeWidth: PropTypes.number,
@@ -173,7 +174,7 @@ export default class Item extends Component {
   }
 
   dragGroupDelta(e, itemIndex) {
-    const { groupTops, order } = this.props
+    const { groupTops, itemOrder } = this.props
     if (this.state.dragging) {
       if (!this.props.canChangeGroup) {
         return 0
@@ -183,7 +184,7 @@ export default class Item extends Component {
       const offset = getSumOffset(this.props.scrollRef).offsetTop
       const scrolls = getSumScroll(this.props.scrollRef)
 
-      const index = order[Object.keys(order)[itemIndex]].index
+      const index = itemOrder[itemIndex]
 
       for (var key of Object.keys(groupTops)) {
         var groupTop = groupTops[key]

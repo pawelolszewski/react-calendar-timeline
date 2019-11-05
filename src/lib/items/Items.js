@@ -122,25 +122,25 @@ export default class Items extends Component {
           .map(item => {
             const itemGroup = _get(item, itemGroupKey)
             let invisibleGroups= [];
-            const tt = itemGroup && itemGroup
-            .filter(key => {
+            let itemOrder = {};
+            let tt = {}
+            itemGroup && itemGroup
+            .map(key => {
               if (key in groupOrders || (parseInt(key)) in groupOrders) {
-                return true
+                tt[key] = groupOrders[key]
+                itemOrder[groupOrders[key].index] = key
               }
               else {
                 invisibleGroups.push(key)
-                return false
               }
             })
-            .reduce((obj, key) => {
-              obj[key] = groupOrders[key];
-              return obj;
-            }, {});
+
             return(<Item
               key={_get(item, itemIdKey)}
               item={item}
               keys={this.props.keys}
               order={tt || groupOrders[_get(item, itemGroupKey)]}
+              itemOrder={Object.keys(itemOrder)}
               invisibleGroups={invisibleGroups}
               dimensions={
                 sortedDimensionItems[_get(item, itemIdKey)].dimensions

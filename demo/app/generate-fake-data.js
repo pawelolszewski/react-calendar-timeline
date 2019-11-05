@@ -74,7 +74,7 @@ export default function(roomCount = 2, tableCount=4, itemCount = 3, daysInPast =
   items = [
     {
       'id': 3597162,
-      'group': ['1006699', '1006700', '1006692', '1006693'],
+      'group': ['1006692', '1006700', '1006693', '1006699'],
       'title': 'fdsfsdfewr',
       'start': moment().startOf('day').hour(13).minute(0).valueOf(),
       'end':   moment().startOf('day').hour(14).minute(0).valueOf(),
