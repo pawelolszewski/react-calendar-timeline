@@ -4,7 +4,6 @@ import moment from 'moment'
 
 import Items from './items/Items'
 import Sidebar from './layout/Sidebar'
-import Columns from './columns/Columns'
 import GroupRows from './row/GroupRows'
 import ScrollElement from './scroll/ScrollElement'
 import MarkerCanvas from './markers/MarkerCanvas'
@@ -163,7 +162,6 @@ export default class ReactCalendarTimeline extends Component {
       removeListener: PropTypes.func
     }),
 
-    verticalLineClassNamesForTime: PropTypes.func,
     verticalLineClassNamesForGroups: PropTypes.func,
 
     children: PropTypes.node
@@ -206,7 +204,6 @@ export default class ReactCalendarTimeline extends Component {
     onItemContextMenu: null,
     onZoom: null,
 
-    verticalLineClassNamesForTime: null,
     verticalLineClassNamesForGroups: null,
 
     moveResizeValidator: null,
@@ -773,28 +770,6 @@ export default class ReactCalendarTimeline extends Component {
     }
   }
 
-  columns(
-    canvasTimeStart,
-    canvasTimeEnd,
-    canvasWidth,
-    minUnit,
-    timeSteps,
-    height
-  ) {
-    return (
-      <Columns
-        canvasTimeStart={canvasTimeStart}
-        canvasTimeEnd={canvasTimeEnd}
-        canvasWidth={canvasWidth}
-        lineCount={_length(this.props.groups)}
-        minUnit={minUnit}
-        timeSteps={timeSteps}
-        height={height}
-        verticalLineClassNamesForTime={this.props.verticalLineClassNamesForTime}
-      />
-    )
-  }
-
   columnsForGroups(
     canvasTimeStart,
     canvasTimeEnd,
@@ -1214,14 +1189,6 @@ export default class ReactCalendarTimeline extends Component {
                   isInteractingWithItem={isInteractingWithItem}
                 >
                   <MarkerCanvas>
-                    {this.columns(
-                      canvasTimeStart,
-                      canvasTimeEnd,
-                      canvasWidth,
-                      minUnit,
-                      timeSteps,
-                      height
-                    )}
                     {this.columnsForGroups(
                       canvasTimeStart,
                       canvasTimeEnd,
