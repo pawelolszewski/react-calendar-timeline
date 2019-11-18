@@ -63,8 +63,6 @@ export default class ReactCalendarTimeline extends Component {
 
     stackItems: PropTypes.bool,
 
-    traditionalZoom: PropTypes.bool,
-
     itemTouchSendsClick: PropTypes.bool,
 
     horizontalLineClassNamesForGroup: PropTypes.func,
@@ -542,28 +540,6 @@ export default class ReactCalendarTimeline extends Component {
         this.props,
         this.state
       )
-    )
-  }
-
-  handleWheelZoom = (speed, xPosition, deltaY) => {
-    this.changeZoom(1.0 + speed * deltaY / 500, xPosition / this.state.width)
-  }
-
-  changeZoom = (scale, offset = 0.5) => {
-    const { minZoom, maxZoom } = this.props
-    const oldZoom = this.state.visibleTimeEnd - this.state.visibleTimeStart
-    const newZoom = Math.min(
-      Math.max(Math.round(oldZoom * scale), minZoom),
-      maxZoom
-    ) // min 1 min, max 20 years
-    const newVisibleTimeStart = Math.round(
-      this.state.visibleTimeStart + (oldZoom - newZoom) * offset
-    )
-
-    this.props.onTimeChange(
-      newVisibleTimeStart,
-      newVisibleTimeStart + newZoom,
-      this.updateScrollCanvas
     )
   }
 
@@ -1105,7 +1081,6 @@ export default class ReactCalendarTimeline extends Component {
       sidebarWidth,
       rightSidebarWidth,
       timeSteps,
-      traditionalZoom
     } = this.props
     const {
       draggingItem,
@@ -1182,11 +1157,6 @@ export default class ReactCalendarTimeline extends Component {
                   scrollRef={this.getScrollElementRef}
                   width={width}
                   height={height}
-                  onZoom={this.changeZoom}
-                  onWheelZoom={this.handleWheelZoom}
-                  traditionalZoom={traditionalZoom}
-                  onScroll={this.onScroll}
-                  isInteractingWithItem={isInteractingWithItem}
                 >
                   <MarkerCanvas>
                     {this.columnsForGroups(

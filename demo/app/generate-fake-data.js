@@ -161,6 +161,6 @@ export default function(roomCount = 2, tableCount=4, itemCount = 3, daysInPast =
     //   },
     // }
     ]
-  items = []
+  // items = []
   return { groups, items };
 }
