@@ -89,7 +89,7 @@ export function iterateTimes(start, end, unit, timeSteps, callback) {
 // this can be manipulated to make the breakpoints change more/less
 // i.e. on zoom how often do we switch to the next unit of time
 // i think this is the distance between cell lines
-export const minCellWidth = 17
+export const minCellWidth = 3
 
 export function getMinUnit(zoom, width, timeSteps) {
   // for supporting weeks, its important to remember that each of these
