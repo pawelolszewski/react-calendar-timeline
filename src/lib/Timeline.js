@@ -631,7 +631,7 @@ export default class ReactCalendarTimeline extends Component {
         offsetX
       )
     }
-    time = Math.floor(time / dragSnap) * dragSnap
+    time = Math.round(time / dragSnap) * dragSnap
 
     return time
   }

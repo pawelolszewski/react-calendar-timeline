@@ -111,28 +111,50 @@ export default class App extends Component {
 
   handleMouseMove = (groupId, time) => {
     const { itemToAdd, groups, startGroupToAdd, openGroups } = this.state
-    console.log('Canvas move', groupId, moment(time).format())
 
-    if (groups[groupId].root) {
+    const gr = groups.find(x => x.id === groupId)
+
+    if (gr && gr.root) {
       return
     }
 
-    let newGroups = [];
+    if (!startGroupToAdd) {
+      this.handleCanvasClickStart(groupId, time)
+      return
+    }
+
+    let newGroups = []
 
     if (startGroupToAdd === groupId) {
-      newGroups = startGroupToAdd
+      newGroups = [startGroupToAdd]
+      // const overlappingReservation = this.props.reservations.find(r => {
+      //   return r.group.includes(groupId) && r.start < time && r.end >
+      //     itemToAdd.start
+      // })
+      // if (overlappingReservation) {
+      //   time = Math.min(time, overlappingReservation.start)
+      // }
     }
     else {
       // Create range.
-      newGroups = [...Array(Math.abs(startGroupToAdd - groupId) + 1).keys()].map(i => i + Math.min(startGroupToAdd, groupId));
-      newGroups  = newGroups.filter((gId) => !openGroups[gId].root && openGroups[openGroups[gId].parent])
+      const startGroupToAddIndex = groups.findIndex(
+        x => x.id === startGroupToAdd)
+      const groupIndex = groups.findIndex(x => x.id === groupId)
+
+      newGroups = [
+        ...Array(Math.abs(startGroupToAddIndex - groupIndex) + 1).keys()].map(
+        i => groups[i + Math.min(startGroupToAddIndex, groupIndex)].id)
+      newGroups = newGroups.filter(
+        (gId) => {
+          const gr = groups.find(x => x.id === gId)
+          return (!gr.root && openGroups[gr.parent])
+        })
     }
 
     this.setState({
-      itemToAdd: {...itemToAdd, end: time, group: newGroups},
+      itemToAdd: { ...itemToAdd, end: moment(time), group: newGroups },
     })
   }
-
 
   handleCanvasClickEnd = (groupId, time) => {
     // const { items, startTimeToAdd, startGroupToAdd } = this.state
