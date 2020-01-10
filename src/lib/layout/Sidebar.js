@@ -12,6 +12,7 @@ export default class Sidebar extends Component {
     keys: PropTypes.object.isRequired,
     groupRenderer: PropTypes.func,
     isRightSidebar: PropTypes.bool,
+    sidebarRef: PropTypes.func.isRequired,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -41,12 +42,7 @@ export default class Sidebar extends Component {
     const { groupIdKey, groupTitleKey, groupRightTitleKey } = this.props.keys
 
     const sidebarStyle = {
-      width: `${width}px`,
       height: `${height}px`
-    }
-
-    const groupsStyle = {
-      width: `${width}px`
     }
 
     let groupLines = this.props.groups.map((group, index) => {
@@ -77,8 +73,9 @@ export default class Sidebar extends Component {
       <div
         className={'rct-sidebar' + (isRightSidebar ? ' rct-sidebar-right' : '')}
         style={sidebarStyle}
+        ref={this.props.sidebarRef}
       >
-        <div style={groupsStyle}>{groupLines}</div>
+        <div>{groupLines}</div>
       </div>
     )
   }

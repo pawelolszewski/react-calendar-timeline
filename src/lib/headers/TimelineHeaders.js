@@ -50,7 +50,7 @@ class TimelineHeaders extends React.Component {
 
   /**
    * check if child of type SidebarHeader
-   * refer to for explanation https://github.com/gaearon/react-hot-loader#checking-element-types 
+   * refer to for explanation https://github.com/gaearon/react-hot-loader#checking-element-types
    */
   isSidebarHeader = (child) => {
     if(child.type === undefined) return false

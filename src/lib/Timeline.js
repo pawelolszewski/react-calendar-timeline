@@ -252,6 +252,10 @@ export default class ReactCalendarTimeline extends Component {
     }
   }
 
+  setLeftSidebarRef = el => {
+    this.sidebarComponent = el
+  }
+
   getTimelineContext = () => {
     const {
       width,
@@ -954,6 +958,7 @@ export default class ReactCalendarTimeline extends Component {
           width={sidebarWidth}
           groupHeights={groupHeights}
           height={height}
+          sidebarRef={el => this.setLeftSidebarRef(el)}
         />
       )
     )
@@ -1142,7 +1147,7 @@ export default class ReactCalendarTimeline extends Component {
           <TimelineHeadersProvider
             registerScroll={this.handleHeaderRef}
             timeSteps={timeSteps}
-            leftSidebarWidth={this.props.sidebarWidth}
+            leftSidebarWidth={this.sidebarComponent ? this.sidebarComponent.offsetWidth : this.props.sidebarWidth}
             rightSidebarWidth={this.props.rightSidebarWidth}
           >
             <div
