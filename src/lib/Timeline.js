@@ -465,7 +465,8 @@ export default class ReactCalendarTimeline extends Component {
   resize = (props = this.props) => {
     const { width: containerWidth } = this.container.getBoundingClientRect()
 
-    let width = containerWidth - props.sidebarWidth - props.rightSidebarWidth
+    // let width = containerWidth - props.sidebarWidth - props.rightSidebarWidth
+    let width = containerWidth - this.sidebarComponent.offsetWidth - props.rightSidebarWidth
     const canvasWidth = getCanvasWidth(width)
     const {
       dimensionItems,
@@ -1157,7 +1158,7 @@ export default class ReactCalendarTimeline extends Component {
             >
               {this.renderHeaders()}
               <div style={outerComponentStyle} className="rct-outer">
-                {sidebarWidth > 0 ? this.sidebar(height, groupHeights) : null}
+                {(this.sidebarComponent ? this.sidebarComponent.offsetWidth : this.props.sidebarWidth) > 0 ? this.sidebar(height, groupHeights) : null}
                 <ScrollElement
                   scrollRef={this.getScrollElementRef}
                   width={width}
