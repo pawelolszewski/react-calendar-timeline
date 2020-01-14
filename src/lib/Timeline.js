@@ -315,6 +315,7 @@ export default class ReactCalendarTimeline extends Component {
       resizingItem: null,
       resizingEdge: null,
       isMouseDown: false,
+      sidebarWidth: 0,
     }
 
     const canvasWidth = getCanvasWidth(this.state.width)
@@ -362,6 +363,7 @@ export default class ReactCalendarTimeline extends Component {
 
     // window.addEventListener('scroll', this.handleMouseMove)
     this.lastTouchDistance = null
+    this.setState({sidebarWidth: !!this.sidebarComponent && this.sidebarComponent.offsetWidth})
   }
 
   componentWillUnmount() {
@@ -459,6 +461,10 @@ export default class ReactCalendarTimeline extends Component {
     if (componentScrollLeft !== scrollLeft) {
       this.scrollComponent.scrollLeft = scrollLeft
       this.scrollHeaderRef.scrollLeft = scrollLeft
+    }
+    if (!!this.sidebarComponent && this.state.sidebarWidth !== this.sidebarComponent.offsetWidth) {
+      this.resize()
+      this.setState({sidebarWidth: this.sidebarComponent.offsetWidth})
     }
   }
 
