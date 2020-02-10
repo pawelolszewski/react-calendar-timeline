@@ -472,7 +472,7 @@ export default class ReactCalendarTimeline extends Component {
     const { width: containerWidth } = this.container.getBoundingClientRect()
 
     // let width = containerWidth - props.sidebarWidth - props.rightSidebarWidth
-    let width = containerWidth - this.sidebarComponent.offsetWidth - props.rightSidebarWidth
+    let width = containerWidth - (this.sidebarComponent ? this.sidebarComponent.offsetWidth : 0 ) - props.rightSidebarWidth
     const canvasWidth = getCanvasWidth(width)
     const {
       dimensionItems,
