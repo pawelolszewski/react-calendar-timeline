@@ -691,14 +691,13 @@ export default class ReactCalendarTimeline extends Component {
 
       for (let i = sortOldGroups[0]; i <= (sortOldGroups.length + sortOldGroups[0]); i++) {
         if (sortOldGroups.indexOf(i) === -1 && groups[i].root) {
-          groupsInsideItem.push(elementPosition);
+          groupsInsideItem.push(dragGroupDelta <= 0 ? elementPosition : (sortOldGroups.length - elementPosition));
         }
         elementPosition++;
       }
     } catch (e) {
       console.log(e)
     }
-
     elementPosition = 0;
       groupsKey.map((gr) => {
       if (groupsInsideItem.includes(elementPosition)) {
