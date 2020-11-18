@@ -670,18 +670,45 @@ export default class ReactCalendarTimeline extends Component {
     const { groups } = this.props
 
     let groupsKey = []
+    groupsKey = Object.keys(oldGroup)
+
     if (dragGroupDelta <= 0) {
-      groupsKey = Object.keys(oldGroup)
+      groupsKey.sort((a,b) => {return (oldGroup[a].index - oldGroup[b].index)})
     }
     else {
-      groupsKey = Object.keys(oldGroup).reverse()
+      groupsKey.sort((a,b) => {return (oldGroup[b].index - oldGroup[a].index)})
     }
 
     let newGroupOrder = []
     let oldGroupOrder = groupsKey
     let error = false
 
+    let groupsInsideItem = [];
+    let elementPosition = 0;
+
+    try {
+      let sortOldGroups = Object.values(oldGroup).map(x=> x.index).sort()
+
+      for (let i = sortOldGroups[0]; i <= (sortOldGroups.length + sortOldGroups[0]); i++) {
+        if (sortOldGroups.indexOf(i) === -1 && groups[i].root) {
+          groupsInsideItem.push(elementPosition);
+        }
+        elementPosition++;
+      }
+    } catch (e) {
+      console.log(e)
+    }
+
+    elementPosition = 0;
       groupsKey.map((gr) => {
+      if (groupsInsideItem.includes(elementPosition)) {
+        if (dragGroupDelta <= 0) {
+          dragGroupDelta--
+        }
+        else {
+          dragGroupDelta++
+        }
+      }
 
       while (typeof groups[oldGroup[gr].index + dragGroupDelta] !== 'undefined'
       && groups[oldGroup[gr].index + dragGroupDelta].root) {
@@ -692,6 +719,8 @@ export default class ReactCalendarTimeline extends Component {
           dragGroupDelta--
         }
       }
+        elementPosition++;
+
       if (typeof groups[oldGroup[gr].index + dragGroupDelta] !== 'undefined') {
         newGroupOrder.push(groups[oldGroup[gr].index + dragGroupDelta].id)
       }

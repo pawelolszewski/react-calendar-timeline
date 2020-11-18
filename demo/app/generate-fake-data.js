@@ -70,7 +70,28 @@ export default function(roomCount = 2, tableCount=4, itemCount = 3, daysInPast =
 
   items = items.sort((a, b) => b - a);
 
-  groups = [{"id":"1006689","roomId":1006689,"title":"Sicilia",root:true,"collapsed":false},{"id":"1006696","tableId":1006696,"title":"01",root:false,"parent":1006689,"covers_min":1,"covers_max":2},{"id":"1006697","tableId":1006697,"title":"02",root:false,"parent":1006689,"covers_min":3,"covers_max":4},{"id":"1006698","tableId":1006698,"title":"03",root:false,"parent":1006689,"covers_min":3,"covers_max":4},{"id":"1006699","tableId":1006699,"title":"04",root:false,"parent":1006689,"covers_min":1,"covers_max":2},{"id":"1006700","tableId":1006700,"title":"05",root:false,"parent":1006689,"covers_min":1,"covers_max":2},{"id":"1006690","roomId":1006690,"title":"Venezia",root:true,"collapsed":false},{"id":"1006692","tableId":1006692,"title":"06",root:false,"parent":1006690,"covers_min":1,"covers_max":2},{"id":"1006693","tableId":1006693,"title":"07",root:false,"parent":1006690,"covers_min":1,"covers_max":2},{"id":"1006694","tableId":1006694,"title":"08",root:false,"parent":1006690,"covers_min":1,"covers_max":2},{"id":"1006695","tableId":1006695,"title":"09",root:false,"parent":1006690,"covers_min":1,"covers_max":2},{"id":"1006691","roomId":1006691,"title":"Toscana",root:true,"collapsed":false},{"id":"1006701","tableId":1006701,"title":"10",root:false,"parent":1006691,"covers_min":4,"covers_max":6},{"id":"1006702","tableId":1006702,"title":"11",root:false,"parent":1006691,"covers_min":3,"covers_max":4},{"id":"1006704","tableId":1006704,"title":"12",root:false,"parent":1006691,"covers_min":3,"covers_max":4},{"id":"1006706","tableId":1006706,"title":"13",root:false,"parent":1006691,"covers_min":4,"covers_max":6},{"id":"1823736","roomId":1823736,"title":"Bar (phone reservations only)",root:true,"collapsed":false},{"id":"1823742","tableId":1823742,"title":"B1",root:false,"parent":1823736,"covers_min":1,"covers_max":1},{"id":"1823743","tableId":1823743,"title":"B2",root:false,"parent":1823736,"covers_min":1,"covers_max":1},{"id":"1823744","tableId":1823744,"title":"B3",root:false,"parent":1823736,"covers_min":1,"covers_max":1}]
+  groups = [
+    { 'id': '1006689', 'roomId': 1006689, 'title': 'Sicilia', root: true, 'collapsed': false },
+    { 'id': '1006696', 'tableId': 1006696, 'title': '01', root: false, 'parent': 1006689, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006697', 'tableId': 1006697, 'title': '02', root: false, 'parent': 1006689, 'covers_min': 3, 'covers_max': 4 },
+    { 'id': '1006698', 'tableId': 1006698, 'title': '03', root: false, 'parent': 1006689, 'covers_min': 3, 'covers_max': 4 },
+    { 'id': '1006699', 'tableId': 1006699, 'title': '04', root: false, 'parent': 1006689, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006700', 'tableId': 1006700, 'title': '05', root: false, 'parent': 1006689, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006690', 'roomId': 1006690, 'title': 'Venezia', root: true, 'collapsed': false },
+    { 'id': '1006692', 'tableId': 1006692, 'title': '06', root: false, 'parent': 1006690, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006693', 'tableId': 1006693, 'title': '07', root: false, 'parent': 1006690, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006694', 'tableId': 1006694, 'title': '08', root: false, 'parent': 1006690, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '2006694', 'tableId': 2006694, 'title': '18', root: false, 'parent': 1006690, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006695', 'tableId': 1006695, 'title': '09', root: false, 'parent': 1006690, 'covers_min': 1, 'covers_max': 2 },
+    { 'id': '1006691', 'roomId': 1006691, 'title': 'Toscana', root: true, 'collapsed': false },
+    { 'id': '1006701', 'tableId': 1006701, 'title': '10', root: false, 'parent': 1006691, 'covers_min': 4, 'covers_max': 6 },
+    { 'id': '1006702', 'tableId': 1006702, 'title': '11', root: false, 'parent': 1006691, 'covers_min': 3, 'covers_max': 4 },
+    { 'id': '1006704', 'tableId': 1006704, 'title': '12', root: false, 'parent': 1006691, 'covers_min': 3, 'covers_max': 4 },
+    { 'id': '1006706', 'tableId': 1006706, 'title': '13', root: false, 'parent': 1006691, 'covers_min': 4, 'covers_max': 6 },
+    { 'id': '1823736', 'roomId': 1823736, 'title': 'Bar (phone reservations only)', root: true, 'collapsed': false },
+    { 'id': '1823742', 'tableId': 1823742, 'title': 'B1', root: false, 'parent': 1823736, 'covers_min': 1, 'covers_max': 1 },
+    { 'id': '1823743', 'tableId': 1823743, 'title': 'B2', root: false, 'parent': 1823736, 'covers_min': 1, 'covers_max': 1 },
+    { 'id': '1823744', 'tableId': 1823744, 'title': 'B3', root: false, 'parent': 1823736, 'covers_min': 1, 'covers_max': 1 }];
   items = [
     {
       'id': 3597162,
